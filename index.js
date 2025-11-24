@@ -12,7 +12,7 @@ async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState("./session");
     const { version } = await fetchLatestBaileysVersion();
 
-    console.log(chalk.cyan("Starting FASHA WhatsApp Bot..."));
+    console.log(chalk.blue("Starting FASHA WhatsApp Bot..."));
 
     const sock = makeWASocket({
         logger: pino({ level: "silent" }),
