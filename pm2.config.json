@@ -1,0 +1,11 @@
+{
+  "apps": [
+    {
+      "name": "fasha",
+      "script": "index.js",
+      "watch": false,
+      "instances": 1,
+      "autorestart": true
+    }
+  ]
+}
