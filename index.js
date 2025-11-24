@@ -8,8 +8,6 @@ const chalk = require("chalk");
 const qrcode = require("qrcode-terminal");
 const pino = require("pino");
 
-const handler = require("./src/lib/handler");
-
 async function startBot() {
     const { state, saveCreds } = await useMultiFileAuthState("./session");
     const { version } = await fetchLatestBaileysVersion();
