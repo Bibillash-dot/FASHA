@@ -8,13 +8,13 @@ const chalk = require("chalk");
 const qrcode = require("qrcode-terminal");
 const pino = require("pino");
 
-const handler = require("./src/handler");
+const handler = require("./src/lib/handler");
 
 async function startBot() {
-    const { state, saveCreds } = await useMultiFileAuthState("./src/session");
+    const { state, saveCreds } = await useMultiFileAuthState("./session");
     const { version } = await fetchLatestBaileysVersion();
 
-    console.log(chalk.cyan("Starting FASHA WhatsApp Bot...\n"));
+    console.log(chalk.cyan("Starting FASHA WhatsApp Bot..."));
 
     const sock = makeWASocket({
         logger: pino({ level: "silent" }),
@@ -24,7 +24,9 @@ async function startBot() {
     });
 
     sock.ev.on("creds.update", saveCreds);
-    sock.ev.on("messages.upsert", async (msg) => handler(sock, msg));
+    sock.ev.on("messages.upsert", async (msg) => {
+        await handler(sock, msg);
+    });
 
     console.log(chalk.green("FASHA BOT is running..."));
 }
