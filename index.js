@@ -7,49 +7,42 @@ const {
 const chalk = require("chalk");
 const pino = require("pino");
 
-// === HANDLER PALSU BIAR TIDAK ERROR ===
-async function handler(sock, msg) {
-    // kosong dulu biar tidak error
-}
-
 async function startBot() {
-    const pairingMode = process.argv.includes("--pairing");
+    const isPairing = process.argv.includes("--pairing");
+
     const { state, saveCreds } = await useMultiFileAuthState("./session");
     const { version } = await fetchLatestBaileysVersion();
 
-    console.log(chalk.blue("Starting FASHA WhatsApp Bot..."));
+    console.log(chalk.cyan("🚀 Starting FASHA WhatsApp Bot...\n"));
 
     const sock = makeWASocket({
         logger: pino({ level: "silent" }),
-        printQRInTerminal: false,   // QR DIMATIKAN
+        printQRInTerminal: false, // QR SELALU DIMATIKAN
         auth: state,
         version,
-        browser: ["FASHA-BOT", "Chrome", "1.0.0"]
+        browser: ["FASHA-BOT", "Chrome", "1.0"]
     });
 
-    // === MODE PAIRING CODE ===
-    if (pairingMode && !state.creds.registered) {
-        const number = process.argv[process.argv.indexOf("--pairing") + 1];
+    // === MODE PAIRING CODE (NO QR) ===
+    if (isPairing && !state.creds.registered) {
+        const numberIndex = process.argv.indexOf("--pairing") + 1;
+        const phoneNumber = process.argv[numberIndex];
 
-        if (!number) {
-            console.log("❌ Masukkan nomor setelah --pairing");
-            return;
+        if (!phoneNumber) {
+            console.log("❌ Tambahkan nomor: node index.js --pairing 628xxxx");
+            process.exit();
         }
 
-        console.log(`📞 Nomor: ${number}`);
+        console.log("📞 Nomor:", phoneNumber);
+        console.log("⏳ Mengambil pairing code...\n");
 
-        const code = await sock.requestPairingCode(number);
-        console.log("\n🔑 PAIRING CODE FASHA:");
-        console.log(chalk.green(code));
+        const code = await sock.requestPairingCode(phoneNumber);
+
+        console.log(chalk.green("🔑 Pairing code: " + code));
+        console.log(chalk.yellow("\nMasukkan kode ini ke WhatsApp kamu!"));
     }
 
     sock.ev.on("creds.update", saveCreds);
-
-    sock.ev.on("messages.upsert", async (msg) => {
-        await handler(sock, msg);
-    });
-
-    console.log(chalk.green("FASHA BOT is running..."));
 }
 
 startBot();
