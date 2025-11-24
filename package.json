@@ -1,0 +1,30 @@
+{
+  "name": "fasha-bot",
+  "version": "1.0.0",
+  "description": "Fasha — WhatsApp Multi-Device Bot (Ultra)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint ."
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "latest",
+    "pino": "latest",
+    "qrcode-terminal": "latest",
+    "axios": "latest",
+    "mongodb": "latest",
+    "form-data": "latest",
+    "ffmpeg-static": "latest",
+    "node-fetch": "latest",
+    "chalk": "latest",
+    "moment-timezone": "latest"
+  },
+  "devDependencies": {
+    "nodemon": "latest",
+    "eslint": "latest"
+  }
+}
