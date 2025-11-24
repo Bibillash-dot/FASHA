@@ -1,0 +1,32 @@
+Fasha/
+├── .env.example
+├── .gitignore
+├── package.json
+├── README.md
+├── index.js
+├── start.sh
+├── pm2.config.json
+├── sessions/                # auth files (di-gitignore)
+├── src/
+│   ├── lib/
+│   │   ├── baileysClient.js
+│   │   ├── handler.js
+│   │   ├── commandLoader.js
+│   │   ├── utils.js
+│   │   └── logger.js
+│   ├── commands/
+│   │   ├── misc/
+│   │   │   ├── ping.js
+│   │   │   ├── menu.js
+│   │   │   └── owner.js
+│   ├── features/
+│   │   ├── downloader.js
+│   │   ├── sticker.js
+│   │   ├── ai.js
+│   │   └── antiLink.js
+│   └── db/
+│       ├── mongo.js
+│       └── jsondb.js
+└── assets/
+    ├── logo.png
+    └── thumbnails/
