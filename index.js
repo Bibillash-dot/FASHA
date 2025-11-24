@@ -8,41 +8,38 @@ const chalk = require("chalk");
 const pino = require("pino");
 
 async function startBot() {
-    const isPairing = process.argv.includes("--pairing");
-
+    const pairingMode = process.argv.includes("--pairing");
     const { state, saveCreds } = await useMultiFileAuthState("./session");
     const { version } = await fetchLatestBaileysVersion();
 
-    console.log(chalk.cyan("🚀 Starting FASHA WhatsApp Bot...\n"));
+    console.log(chalk.blue("Starting FASHA WhatsApp Bot..."));
 
     const sock = makeWASocket({
         logger: pino({ level: "silent" }),
-        printQRInTerminal: false, // QR SELALU DIMATIKAN
+        printQRInTerminal: false, // QR DIMATIKAN 100%
         auth: state,
         version,
-        browser: ["FASHA-BOT", "Chrome", "1.0"]
+        browser: ["FASHA-BOT", "Chrome", "1.0.0"]
     });
 
-    // === MODE PAIRING CODE (NO QR) ===
-    if (isPairing && !state.creds.registered) {
-        const numberIndex = process.argv.indexOf("--pairing") + 1;
-        const phoneNumber = process.argv[numberIndex];
+    // MODE PAIRING
+    if (pairingMode && !state.creds.registered) {
+        const phoneNumber = process.argv[process.argv.indexOf("--pairing") + 1];
 
-        if (!phoneNumber) {
-            console.log("❌ Tambahkan nomor: node index.js --pairing 628xxxx");
-            process.exit();
-        }
+        if (!phoneNumber)
+            return console.log("❌ Masukkan nomor setelah --pairing");
 
-        console.log("📞 Nomor:", phoneNumber);
-        console.log("⏳ Mengambil pairing code...\n");
+        console.log(`📞 Nomor: ${phoneNumber}`);
 
         const code = await sock.requestPairingCode(phoneNumber);
-
-        console.log(chalk.green("🔑 Pairing code: " + code));
-        console.log(chalk.yellow("\nMasukkan kode ini ke WhatsApp kamu!"));
+        console.log("\n🔑 PAIRING CODE FASHA:");
+        console.log(chalk.green(code));
     }
 
     sock.ev.on("creds.update", saveCreds);
+
+    console.log(chalk.green("FASHA BOT is running..."));
 }
 
-startBot();
+startBot() ;
+
