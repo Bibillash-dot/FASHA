@@ -7,8 +7,13 @@ const {
 const chalk = require("chalk");
 const pino = require("pino");
 
+// === HANDLER PALSU BIAR TIDAK ERROR ===
+async function handler(sock, msg) {
+    // kosong dulu biar tidak error
+}
+
 async function startBot() {
-    const pairingCode = process.argv.includes("--pairing");
+    const pairingMode = process.argv.includes("--pairing");
     const { state, saveCreds } = await useMultiFileAuthState("./session");
     const { version } = await fetchLatestBaileysVersion();
 
@@ -16,22 +21,24 @@ async function startBot() {
 
     const sock = makeWASocket({
         logger: pino({ level: "silent" }),
-        printQRInTerminal: false, // QR DIMATIKAN
+        printQRInTerminal: false,   // QR DIMATIKAN
         auth: state,
         version,
         browser: ["FASHA-BOT", "Chrome", "1.0.0"]
     });
 
     // === MODE PAIRING CODE ===
-    if (pairingCode && !state.creds.registered) {
-        const phoneNumber = process.argv[process.argv.indexOf("--pairing") + 1];
+    if (pairingMode && !state.creds.registered) {
+        const number = process.argv[process.argv.indexOf("--pairing") + 1];
 
-        if (!phoneNumber)
-            return console.log("❌ Masukkan nomor setelah --pairing");
+        if (!number) {
+            console.log("❌ Masukkan nomor setelah --pairing");
+            return;
+        }
 
-        console.log(`📞 Nomor: ${phoneNumber}`);
+        console.log(`📞 Nomor: ${number}`);
 
-        const code = await sock.requestPairingCode(phoneNumber);
+        const code = await sock.requestPairingCode(number);
         console.log("\n🔑 PAIRING CODE FASHA:");
         console.log(chalk.green(code));
     }
